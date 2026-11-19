@@ -28,7 +28,6 @@ all_reward = []
 num_steps = []
 
 rng = np.random.default_rng()
-actions = ['up', 'down', 'left', 'right']
 
 for step in range(5000):
     feature_vector = []
@@ -36,6 +35,7 @@ for step in range(5000):
     features = world.get_current_state()
 
     feature_vector = np.array(list(features.values()) + [1]) # + 1 for the bias column
+    # dot product the weights matrix with vector of features.
     action_utilities = weights.dot(feature_vector)
 
     # e-greedy algorhithm
@@ -45,8 +45,10 @@ for step in range(5000):
         # choose action. The action with the highest utiltity calculated with a linear model.
         action = action_utilities.idxmax()
 
+    # Take the action and get info on new state
     new_features, reward = world.step(action)
 
+    # For plotting
     all_reward.append(reward)
     num_steps.append(step)
     
@@ -56,7 +58,7 @@ for step in range(5000):
     best_Q_new_features = weights.dot(new_feature_vector).max()
     Q_for_executed_action = action_utilities[action]
     rpe = (reward + gamma * best_Q_new_features) - Q_for_executed_action
-
+    # Tune weights to minimize square-RPE
     weights.loc[action] += alpha * rpe * feature_vector
 
     #world.render()
