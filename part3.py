@@ -25,6 +25,7 @@ gamma = 0.9
 alpha = 0.1
 epsilon = 0.1 # Do a random action randomly
 all_reward = []
+num_steps = []
 
 rng = np.random.default_rng()
 actions = ['up', 'down', 'left', 'right']
@@ -32,7 +33,7 @@ actions = ['up', 'down', 'left', 'right']
 for step in range(5000):
     feature_vector = []
     action_utilities = []
-    state = world.get_current_state()
+    features = world.get_current_state()
 
     
     feature_vector = np.array(list(features.values()) + [1]) # + 1 for the bias column
@@ -46,6 +47,10 @@ for step in range(5000):
         action = action_utilities.idxmax()
 
     new_features, reward = world.step(action)
+
+    all_reward.append(reward)
+    num_steps.append(step)
+    
     new_feature_vector = np.array(list(new_features.values()) + [1])
 
     # update weights
@@ -55,13 +60,17 @@ for step in range(5000):
 
     weights.loc[action] += alpha * rpe * feature_vector
 
-    world.render()
+    #world.render()
 
 # As in task 1, visualize the agent navigating the world after it has finished learning. 
 # Why can this agent handle the re-randomizing world better than the Q-learning agent from task 1?
 
+plt.plot(num_steps, np.cumsum(all_reward))
 
+plt.xlabel("# of steps")
+plt.ylabel("reward")
 
+plt.show()
 
 # Why would a Q-learning agent take much longer to learn from these features, than from the 
 # state in task 1? Why does function approximation not suffer from the same problem?

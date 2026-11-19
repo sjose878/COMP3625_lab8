@@ -56,8 +56,8 @@ print(Q)
 
 plt.plot(num_steps, np.cumsum(rewards))
 
-plt.xlabel("reward")
-plt.ylabel("# of steps")
+plt.xlabel("# of steps")
+plt.ylabel("reward")
 
 plt.show()
 
