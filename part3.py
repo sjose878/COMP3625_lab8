@@ -1,18 +1,18 @@
 from gridworld import GridWorld
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # instantiate the gridworld object
 world = GridWorld(size=5, 
                   state_includes_location=False, 
                   state_includes_sensory=True,  # this agent has features describing the state
-                  randomize_each_trial=False
+                  randomize_each_trial=False,
+                  wall_probability=0.1
                   )
 features = world.reset()
 
 # Write an agent that uses function approximation to solve this world
-
-
 
 # create a matrix of weights for each feature and action
 weights = pd.DataFrame(index=['up', 'down', 'left', 'right'], 
@@ -26,20 +26,36 @@ alpha = 0.1
 epsilon = 0.1 # Do a random action randomly
 all_reward = []
 
+rng = np.random.default_rng()
+actions = ['up', 'down', 'left', 'right']
+
 for step in range(5000):
     feature_vector = []
     action_utilities = []
+    state = world.get_current_state()
+
+    
+    feature_vector = np.array(list(features.values()) + [1]) # + 1 for the bias column
+    action_utilities = weights.dot(feature_vector)
+
+    # e-greedy algorhithm
+    if (epsilon > rng.random()):
+        action = rng.choice(weights.index)
+    else:
+        # choose action. The action with the highest utiltity calculated with a linear model.
+        action = action_utilities.idxmax()
 
     new_features, reward = world.step(action)
-    new_feature_vector = np.array(list(new_features.values()) + 1)
+    new_feature_vector = np.array(list(new_features.values()) + [1])
 
-    # choose an action
-    # code here
+    # update weights
+    best_Q_new_features = weights.dot(new_feature_vector).max()
+    Q_for_executed_action = action_utilities[action]
+    rpe = (reward + gamma * best_Q_new_features) - Q_for_executed_action
 
-# update weights
-best_Q_new_features = weights.dot(new_feature_vector).max()
-Q_for_executed_action = action_utilities[action]
-rpe = (reward + gamma)
+    weights.loc[action] += alpha * rpe * feature_vector
+
+    world.render()
 
 # As in task 1, visualize the agent navigating the world after it has finished learning. 
 # Why can this agent handle the re-randomizing world better than the Q-learning agent from task 1?
