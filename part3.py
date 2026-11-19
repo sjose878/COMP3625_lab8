@@ -35,7 +35,6 @@ for step in range(5000):
     action_utilities = []
     features = world.get_current_state()
 
-    
     feature_vector = np.array(list(features.values()) + [1]) # + 1 for the bias column
     action_utilities = weights.dot(feature_vector)
 
@@ -74,3 +73,11 @@ plt.show()
 
 # Why would a Q-learning agent take much longer to learn from these features, than from the 
 # state in task 1? Why does function approximation not suffer from the same problem?
+
+# The Q-learning agent would take much longer to learn from these features because it would have to 
+# store each unique combination of features as its own unique state. This requires the agent to learn 
+# new Q values for each (state, action) pairs, even if it had previously learned from similar states.
+# Function approximation doesn't suffer from this because it instead uses generalization in its approach 
+# by learning weights for the features. These weights can then be applied to any state containing similar features,
+# allowing the agent to use what it has already learned and therefore reducing the time it takes for 
+# the agent to learn overall.
