@@ -63,3 +63,5 @@ plt.show()
 
 
 # Now set the world to re-randomize after each trial. What goes wrong? Why?
+# The agent is unable to adapt to the new world because it only learns about specific states
+# in the context of the previous world. 

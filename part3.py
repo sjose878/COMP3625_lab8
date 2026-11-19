@@ -70,6 +70,11 @@ plt.xlabel("# of steps")
 plt.ylabel("reward")
 
 plt.show()
+# A function approximation agent can handle a new world better because it acts based off features in its
+# environment. If it learned the red square is bad in a previous world, it will retain that 
+# knowledge in the new random world. A Q-learning agent doesn't do as well since it has to learn all
+# of a world's states individually. When a new world is created, all the previous world's knowledge becomes 
+# useless.
 
 # Why would a Q-learning agent take much longer to learn from these features, than from the 
 # state in task 1? Why does function approximation not suffer from the same problem?
